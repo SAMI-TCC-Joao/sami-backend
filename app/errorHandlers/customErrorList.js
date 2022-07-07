@@ -1,4 +1,4 @@
-import locale from './en.json';
+import locale from './en.json' assert {type: "json"};
 
 const error = {};
 
