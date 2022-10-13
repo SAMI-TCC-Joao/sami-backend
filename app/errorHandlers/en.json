@@ -9,7 +9,7 @@
     "tokenExpired": "Sessão expirada.",
     "invalidToken": "Token inválido.",
 
-  
+    "noData": "Dados não informados.",
     "noUser": "Usuário não encontrado.",
     "noEmail": "E-mail não foi informado",
     "noPassword": "Senha não foi informada.",

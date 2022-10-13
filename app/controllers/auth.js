@@ -2,14 +2,13 @@ import User from '../models/user';
 import tokenLib from '../../lib/tokenLib';
 import { error } from '../errorHandlers/customErrorList';
 import CustomError from '../errorHandlers/CustomError';
-import { validateData } from '../services/auth';
+import { validateData, validateCredentials } from '../services/helper';
 
 const login = (req, res, next) => {
   const { body } = req;
   const { email, password } = body;
 
-  return validateData(email)
-    .then(() => validateData(password))
+  return validateCredentials(email, password)
     .then(() =>
       User.findOne({
         where: {
@@ -26,10 +25,12 @@ const login = (req, res, next) => {
     )
     .then((user) => {
       const token = tokenLib.generateToken(user);
-      return User.update({ ...user, token }, { where: { email: user.email } })
+      return User.update({ ...user, token }, { where: { id: user.id } });
     })
-    .then(({password, ...user}) => res.status(200).json({ user }))
-    .catch(err => next(err));
+    .then(({ password: userPassword, ...user }) =>
+      res.status(200).json({ user })
+    )
+    .catch((err) => next(err));
 };
 
 const logout = (req, res) => {

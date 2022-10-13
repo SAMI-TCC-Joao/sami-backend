@@ -1,4 +1,4 @@
-import locale from './en.json' assert {type: "json"};
+import locale from './en.json';
 
 const error = {};
 
@@ -23,8 +23,28 @@ error.BAD_REQUEST = {
   invalidCredentials: {
     statusCode: BAD_REQUEST,
     code: 'BR-00001',
-    message: locale.invalidCredentials
-  }
+    message: locale.invalidCredentials,
+  },
+  noData: {
+    statusCode: BAD_REQUEST,
+    code: 'BR-00002',
+    message: locale.noData,
+  },
+  noUser: {
+    statusCode: BAD_REQUEST,
+    code: 'BR-00003',
+    message: locale.noUser,
+  },
+  noEmail: {
+    statusCode: BAD_REQUEST,
+    code: 'BR-00004',
+    message: locale.noEmail,
+  },
+  noPassword: {
+    statusCode: BAD_REQUEST,
+    code: 'BR-00005',
+    message: locale.noPassword,
+  },
 };
 
 error.UNAUTHORIZED = {
@@ -45,8 +65,4 @@ error.UNAUTHORIZED = {
   },
 };
 
-export {
-  error,
-  NOT_FOUND,
-  UNAUTHORIZED
-};
+export { error, NOT_FOUND, UNAUTHORIZED };
