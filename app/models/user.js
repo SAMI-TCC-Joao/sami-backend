@@ -5,7 +5,9 @@ const mockUser = {
   password: '$2b$10$i7AWThpWs.AJnx2j/EeT0OG8rFHmwBaivP/1VBq6HWLeidNnxhT9.',
 };
 
-const user = {
+const User = {
+  findAndCountAll: () => [mockUser, 1],
+  findByPk: (id) => (id === mockUser.id ? mockUser : null),
   findOne: ({ where: { email } }) =>
     email === mockUser.email ? mockUser : null,
   update: (object, { where: { email, id } }) =>
@@ -14,4 +16,4 @@ const user = {
   delete: (object, { where: { id } }) => (id === mockUser.id ? object : null),
 };
 
-export default user;
+export default User;
