@@ -1,60 +1,15 @@
-import { error } from '../errorHandlers/customErrorList';
+const mockUser = {
+  id: 1,
+  name: 'teste',
+  email: 'teste@email.com',
+  password: '$2b$10$i7AWThpWs.AJnx2j/EeT0OG8rFHmwBaivP/1VBq6HWLeidNnxhT9.'
+};
 
-const user = (sequelize, DataTypes) => {
-  const User = sequelize.define(
-    'user',
-    {
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: {
-          args: true,
-          msg: error.BAD_REQUEST.uniqueEmail.message,
-        },
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      birthDate: {
-        type: DataTypes.DATE,
-        allowNull: true,
-      },
-      userType: {
-        type: DataTypes.STRING,
-        defaultValue: 'provider',
-      },
-      passwordToken: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      isActive: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true,
-      },
-      gender: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      lastModifiedBy: {
-        type: DataTypes.JSON,
-      },
-    },
-    {
-      paranoid: true,
-      defaultScope: {
-        returning: true,
-        individualHooks: true,
-      },
-    }
-  );
-
-  return User;
+const user = {
+  findOne: ({ where: { email } }) =>
+    email === mockUser.email ? mockUser : null,
+  update: (object, { where: { email } }) =>
+    email === mockUser.email ? object : null,
 };
 
 export default user;
