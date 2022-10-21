@@ -14,8 +14,10 @@ const createUser = (req, res, next) => {
     .then(() => tokenLib.generatePasswordHash(password))
     .then((passwordHash) =>
       User.create({
-        ...body,
-        password: passwordHash,
+        data: {
+          ...body,
+          password: passwordHash,
+        },
       })
     )
     .then(validateData)
@@ -36,7 +38,7 @@ const updateUser = (req, res, next) => {
   }
 
   return validateData(body)
-    .then(() => User.update(body, { where: id }))
+    .then(() => User.update({ where: id, data: body }))
     .then(validateData)
     .then(({ password: userPassword, ...user }) =>
       res.status(200).json({ user })
@@ -46,7 +48,6 @@ const updateUser = (req, res, next) => {
 
 const deleteUser = (req, res, next) => {
   const {
-    body,
     params: { id },
   } = req;
 
@@ -54,8 +55,7 @@ const deleteUser = (req, res, next) => {
     throw new CustomError(error.BAD_REQUEST.noUser);
   }
 
-  return validateData(body)
-    .then(() => User.delete(body, { where: id }))
+  return User.delete({ where: id })
     .then(validateData)
     .then(({ password, ...user }) => res.status(200).json({ user }))
     .catch(next);

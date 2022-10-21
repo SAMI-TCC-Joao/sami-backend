@@ -15,7 +15,7 @@ const getAll = (req, res, next) => {
   }
 
   return model
-    .findAndCountAll(query)
+    .findMany(query)
     .then((data) => res.status(200).json(data))
     .catch(next);
 };
@@ -26,6 +26,7 @@ const getById = (req, res, next) => {
     params: { parseModel, id },
   } = req;
   const { [parseModel]: model } = models;
+  const { where, ..._query } = query;
 
   if (!model) {
     return res.json({});
@@ -36,7 +37,7 @@ const getById = (req, res, next) => {
   }
 
   return model
-    .findByPk(id, query)
+    .findUnique({ where: { ...where, id }, ..._query })
     .then((data) => res.status(200).json(data))
     .catch(next);
 };
@@ -50,7 +51,7 @@ const create = (req, res, next) => {
   const { [parseModel]: model } = models;
 
   return validateData(body)
-    .then(() => model.create(body, query))
+    .then(() => model.create({ data: body, ...query }))
     .then(validateData)
     .then((data) => res.status(200).json(data))
     .catch(next);
@@ -68,7 +69,7 @@ const update = (req, res, next) => {
   }
 
   return validateData(body)
-    .then(() => model.update(body, { where: id }))
+    .then(() => model.update({ where: id, data: body }))
     .then(validateData)
     .then((data) => res.status(200).json(data))
     .catch(next);
@@ -76,7 +77,6 @@ const update = (req, res, next) => {
 
 const remove = (req, res, next) => {
   const {
-    body,
     params: { parseModel, id },
   } = req;
   const { [parseModel]: model } = models;
@@ -85,8 +85,8 @@ const remove = (req, res, next) => {
     throw new CustomError(error.BAD_REQUEST.noData);
   }
 
-  return validateData(body)
-    .then(() => model.delete(body, { where: id }))
+  return model
+    .delete({ where: id })
     .then(validateData)
     .then((data) => res.status(200).json(data))
     .catch(next);

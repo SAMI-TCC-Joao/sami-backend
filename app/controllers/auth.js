@@ -12,7 +12,7 @@ const login = (req, res, next) => {
 
   return validateCredentials(email, password)
     .then(() =>
-      User.findOne({
+      User.findUnique({
         where: {
           email: email.toLowerCase(),
         },
@@ -27,11 +27,11 @@ const login = (req, res, next) => {
     )
     .then((user) => {
       const token = tokenLib.generateToken(user);
-      return User.update({ ...user, token }, { where: { id: user.id } });
+      return User.update({ where: { id: user.id }, data: { token } });
     })
-    .then(({ password: userPassword, ...user }) =>
-      res.status(200).json({ user })
-    )
+    .then(({ password: userPassword, ...user }) => {
+      return res.status(200).json({ user });
+    })
     .catch(next);
 };
 
@@ -41,14 +41,17 @@ const logout = (req, res, next) => {
 
   return validateData(email)
     .then(() =>
-      User.findOne({
+      User.findUnique({
         where: {
           email: email.toLowerCase(),
         },
       })
     )
     .then((user) =>
-      User.update({ ...user, token: '' }, { where: { email: user.email } })
+      User.update({
+        where: { email: user.email },
+        data: { ...user, token: '' },
+      })
     )
     .then((user) => res.json({ logout: !!user }))
     .catch(next);

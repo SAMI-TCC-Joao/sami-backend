@@ -2,7 +2,8 @@ const mockUser = {
   id: 1,
   name: 'teste',
   email: 'teste@email.com',
-  password: '$2b$10$i7AWThpWs.AJnx2j/EeT0OG8rFHmwBaivP/1VBq6HWLeidNnxhT9.',
+  password: '$2b$10$i7AWThpWs.AJnx2j/EeT0OG8rFHmwBaivP/1VBq6HWLeidNnxhT9.', // teste
+  registration: 123456789,
 };
 
 const User = {

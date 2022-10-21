@@ -1,6 +1,8 @@
 const mockClass = {
   id: 1,
   name: 'teste',
+  subjectName: 'IHC',
+  subjectId: 2,
 };
 
 const Class = {
