@@ -1,6 +1,6 @@
 import cors from 'cors';
 
-const origin = [/localhost/];
+const origin = process.env.CURRENT_ENV === 'local' ? [/localhost/] : [/sami-frontend/];
 
 export default (app) => {
   app.options(
