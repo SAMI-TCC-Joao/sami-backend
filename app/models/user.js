@@ -2,10 +2,13 @@ const mockUser = {
   id: 1,
   name: 'teste',
   email: 'teste@email.com',
-  password: '$2b$10$i7AWThpWs.AJnx2j/EeT0OG8rFHmwBaivP/1VBq6HWLeidNnxhT9.',
+  password: '$2b$10$i7AWThpWs.AJnx2j/EeT0OG8rFHmwBaivP/1VBq6HWLeidNnxhT9.', // teste
+  registration: 123456789,
 };
 
-const user = {
+const User = {
+  findAndCountAll: () => [mockUser, 1],
+  findByPk: (id) => (id === mockUser.id ? mockUser : null),
   findOne: ({ where: { email } }) =>
     email === mockUser.email ? mockUser : null,
   update: (object, { where: { email, id } }) =>
@@ -14,4 +17,4 @@ const user = {
   delete: (object, { where: { id } }) => (id === mockUser.id ? object : null),
 };
 
-export default user;
+export default User;

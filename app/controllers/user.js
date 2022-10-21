@@ -1,8 +1,10 @@
-import User from '../models/user';
+import models from '../model';
 import tokenLib from '../../lib/tokenLib';
 import { error } from '../errorHandlers/customErrorList';
 import CustomError from '../errorHandlers/CustomError';
 import { validateData, validateCredentials } from '../services/helper';
+
+const { User } = models;
 
 const createUser = (req, res, next) => {
   const { body } = req;
@@ -12,15 +14,17 @@ const createUser = (req, res, next) => {
     .then(() => tokenLib.generatePasswordHash(password))
     .then((passwordHash) =>
       User.create({
-        ...body,
-        password: passwordHash,
+        data: {
+          ...body,
+          password: passwordHash,
+        },
       })
     )
     .then(validateData)
     .then(({ password: userPassword, ...user }) =>
       res.status(200).json({ user })
     )
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 const updateUser = (req, res, next) => {
@@ -34,17 +38,16 @@ const updateUser = (req, res, next) => {
   }
 
   return validateData(body)
-    .then(() => User.update(body, { where: id }))
+    .then(() => User.update({ where: id, data: body }))
     .then(validateData)
     .then(({ password: userPassword, ...user }) =>
       res.status(200).json({ user })
     )
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 const deleteUser = (req, res, next) => {
   const {
-    body,
     params: { id },
   } = req;
 
@@ -52,11 +55,10 @@ const deleteUser = (req, res, next) => {
     throw new CustomError(error.BAD_REQUEST.noUser);
   }
 
-  return validateData(body)
-    .then(() => User.delete(body, { where: id }))
+  return User.delete({ where: id })
     .then(validateData)
     .then(({ password, ...user }) => res.status(200).json({ user }))
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 export { createUser, updateUser, deleteUser };
