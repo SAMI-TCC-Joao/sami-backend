@@ -1,6 +1,18 @@
 import cors from 'cors';
+import { expressjwt } from 'express-jwt';
 
-const origin = process.env.CURRENT_ENV === 'local' ? [/localhost/] : [/sami-frontend/];
+const origin =
+  process.env.CURRENT_ENV === 'local' ? [/localhost/] : [/sami-frontend/];
+
+const validateToken = (req) => {
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.split(' ')[0] === 'Bearer'
+  ) {
+    return req.headers.authorization.split(' ')[1];
+  }
+  return null;
+};
 
 export default (app) => {
   app.options(
@@ -16,4 +28,18 @@ export default (app) => {
       credentials: true,
     })
   );
+  app.use(
+    `*`,
+    expressjwt({
+      secret: process.env.SECRET,
+      getToken: validateToken,
+      credentialsRequired: false,
+      algorithms: ['HS256'],
+    })
+  );
+
+  app.use(`*`, (req, res, next) => {
+    req.user = req?.auth?.user;
+    return next();
+  });
 };

@@ -7,7 +7,7 @@ import { validateData, validateCredentials } from '../services/helper';
 const { User } = models;
 
 const createUser = (req, res, next) => {
-  const { body } = req;
+  const { body, where } = req;
   const { email, password } = body;
 
   return validateCredentials(email, password)
@@ -16,6 +16,7 @@ const createUser = (req, res, next) => {
       User.create({
         data: {
           ...body,
+          ...where,
           password: passwordHash,
         },
       })
@@ -30,6 +31,7 @@ const createUser = (req, res, next) => {
 const updateUser = (req, res, next) => {
   const {
     body,
+    where,
     params: { id },
   } = req;
 
@@ -38,7 +40,7 @@ const updateUser = (req, res, next) => {
   }
 
   return validateData(body)
-    .then(() => User.update({ where: id, data: body }))
+    .then(() => User.update({ where: { id, ...where }, data: body }))
     .then(validateData)
     .then(({ password: userPassword, ...user }) =>
       res.status(200).json({ user })
@@ -48,6 +50,7 @@ const updateUser = (req, res, next) => {
 
 const deleteUser = (req, res, next) => {
   const {
+    where,
     params: { id },
   } = req;
 
@@ -55,7 +58,7 @@ const deleteUser = (req, res, next) => {
     throw new CustomError(error.BAD_REQUEST.noUser);
   }
 
-  return User.delete({ where: id })
+  return User.delete({ where: { id, ...where } })
     .then(validateData)
     .then(({ password, ...user }) => res.status(200).json({ user }))
     .catch(next);
