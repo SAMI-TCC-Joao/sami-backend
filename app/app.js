@@ -5,6 +5,7 @@ import middlewares from './middlewares';
 import errorHandler from './errorHandler';
 
 const app = express();
+
 app.use(bodyParser.json({ limit: '2mb' }));
 middlewares(app);
 routes(app);

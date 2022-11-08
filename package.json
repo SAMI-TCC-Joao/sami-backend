@@ -6,7 +6,7 @@
   "main": "app/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx prisma generate && npx prisma migrate dev --name init && env-cmd -f .env nodemon --es-module-specifier-resolution=node app/index.js",
+    "start": "sudo service postgresql start && npx prisma generate && npx prisma migrate dev --name init && env-cmd -f .env nodemon --es-module-specifier-resolution=node app/index.js",
     "lint": "eslint . --fix --ext .js "
   },
   "repository": {

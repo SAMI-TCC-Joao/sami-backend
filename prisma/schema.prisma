@@ -15,6 +15,7 @@ model SubjectClass {
   name        String
   subjectName String
   subjectId   Int
+  semeter     String
   students    UsersSubjectClasses[]
   teachers    UserGivenClasses[]
 }

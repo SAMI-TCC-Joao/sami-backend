@@ -2,7 +2,7 @@ export default (app) => {
   app.use((e, req, res, next) => {
     const { name, message, code, statusCode } = e;
     console.log({ name, message, code, statusCode });
-    if (name === 'CustomError') {
+    if (statusCode !== 200) {
       return res.status(statusCode).json({ message, code, logout: true });
     }
 

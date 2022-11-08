@@ -1,7 +1,9 @@
 import express from 'express';
 import { createUser, updateUser, deleteUser } from '../controllers/user';
 import { isAllowed, isAllowedOrIsMe } from '../../lib/authLib';
-import { userType } from '../../lib/enumLib';
+import enums from '../../lib/enumLib';
+
+const { userType } = enums;
 
 const router = express.Router();
 

@@ -1,14 +1,12 @@
-import models from '../model';
 import tokenLib from '../../lib/tokenLib';
 import { error } from '../errorHandlers/customErrorList';
 import CustomError from '../errorHandlers/CustomError';
 import { validateData, validateCredentials } from '../services/helper';
 
-const { User } = models;
-
 const createUser = (req, res, next) => {
-  const { body, where } = req;
+  const { body, where, models } = req;
   const { email, password } = body;
+  const { User } = models;
 
   return validateCredentials(email, password)
     .then(() => tokenLib.generatePasswordHash(password))
@@ -33,7 +31,9 @@ const updateUser = (req, res, next) => {
     body,
     where,
     params: { id },
+    models,
   } = req;
+  const { User } = models;
 
   if (!id) {
     throw new CustomError(error.BAD_REQUEST.noUser);
@@ -52,7 +52,9 @@ const deleteUser = (req, res, next) => {
   const {
     where,
     params: { id },
+    models,
   } = req;
+  const { User } = models;
 
   if (!id) {
     throw new CustomError(error.BAD_REQUEST.noUser);

@@ -1,5 +1,6 @@
 import cors from 'cors';
 import { expressjwt } from 'express-jwt';
+import models from './model';
 
 const origin =
   process.env.CURRENT_ENV === 'local' ? [/localhost/] : [/sami-frontend/];
@@ -29,7 +30,6 @@ export default (app) => {
     })
   );
   app.use(
-    `*`,
     expressjwt({
       secret: process.env.SECRET,
       getToken: validateToken,
@@ -38,7 +38,8 @@ export default (app) => {
     })
   );
 
-  app.use(`*`, (req, res, next) => {
+  app.use((req, res, next) => {
+    req.models = models;
     req.user = req?.auth?.user;
     return next();
   });
