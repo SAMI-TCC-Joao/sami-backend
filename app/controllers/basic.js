@@ -1,4 +1,3 @@
-import models from '../model';
 import { error } from '../errorHandlers/customErrorList';
 import CustomError from '../errorHandlers/CustomError';
 import { validateData } from '../services/helper';
@@ -7,6 +6,7 @@ const getAll = (req, res, next) => {
   const {
     query = {},
     params: { parseModel },
+    models,
   } = req;
   const { [parseModel]: model } = models;
 
@@ -24,6 +24,7 @@ const getById = (req, res, next) => {
   const {
     query = {},
     params: { parseModel, id },
+    models,
   } = req;
   const { [parseModel]: model } = models;
   const { where, ..._query } = query;
@@ -47,8 +48,10 @@ const create = (req, res, next) => {
     body,
     query = {},
     params: { parseModel },
+    models,
   } = req;
   const { [parseModel]: model } = models;
+  console.log({ model, req });
 
   return validateData(body)
     .then(() => model.create({ data: body, ...query }))
@@ -61,6 +64,7 @@ const update = (req, res, next) => {
   const {
     body,
     params: { parseModel, id },
+    models,
   } = req;
   const { [parseModel]: model } = models;
 
@@ -78,6 +82,7 @@ const update = (req, res, next) => {
 const remove = (req, res, next) => {
   const {
     params: { parseModel, id },
+    models,
   } = req;
   const { [parseModel]: model } = models;
 

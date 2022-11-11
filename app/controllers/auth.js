@@ -1,14 +1,13 @@
-import models from '../model';
 import tokenLib from '../../lib/tokenLib';
 import { error } from '../errorHandlers/customErrorList';
 import CustomError from '../errorHandlers/CustomError';
 import { validateData, validateCredentials } from '../services/helper';
 
-const { User } = models;
-
 const login = (req, res, next) => {
-  const { body } = req;
+  const { body, models } = req;
   const { email, password } = body;
+
+  const { User } = models;
 
   return validateCredentials(email, password)
     .then(() =>
@@ -19,12 +18,14 @@ const login = (req, res, next) => {
       })
     )
     .then(validateData)
-    .then((user) =>
-      tokenLib.verifyPassword(password, user.password).then((isValid) => {
-        if (isValid) return user;
-        throw new CustomError(error.BAD_REQUEST.invalidCredentials);
-      })
-    )
+    .then((user) => {
+      return tokenLib
+        .verifyPassword(password, user.password)
+        .then((isValid) => {
+          if (isValid) return user;
+          throw new CustomError(error.BAD_REQUEST.invalidCredentials);
+        });
+    })
     .then((user) => {
       const token = tokenLib.generateToken(user);
       return User.update({ where: { id: user.id }, data: { token } });
@@ -36,8 +37,10 @@ const login = (req, res, next) => {
 };
 
 const logout = (req, res, next) => {
-  const { body } = req;
+  const { body, models } = req;
   const { email } = body;
+
+  const { User } = models;
 
   return validateData(email)
     .then(() =>
@@ -53,7 +56,7 @@ const logout = (req, res, next) => {
         data: { ...user, token: '' },
       })
     )
-    .then((user) => res.json({ logout: !!user }))
+    .then(() => res.json({ logout: true }))
     .catch(next);
 };
 
