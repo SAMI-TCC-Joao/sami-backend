@@ -51,6 +51,7 @@ const create = (req, res, next) => {
     models,
   } = req;
   const { [parseModel]: model } = models;
+  console.log({ model, req });
 
   return validateData(body)
     .then(() => model.create({ data: body, ...query }))

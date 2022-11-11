@@ -2,7 +2,7 @@ import express from 'express';
 
 import { getAll, getById, create, update, remove } from '../controllers/basic';
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.get('/', getAll);
 router.get('/:id', getById);
