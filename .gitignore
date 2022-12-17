@@ -39,5 +39,5 @@ lerna-debug.log*
 /TODO.md
 /insert-sql.txt
 
-.env
+/.env
 yarn.lock
