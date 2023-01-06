@@ -1,3 +1,4 @@
+// eslint-disable-next-line prettier/prettier
 import { Injectable } from '@nestjs/common';
 import { CreateClasseDto } from './dto/create-classe.dto';
 import { UpdateClasseDto } from './dto/update-classe.dto';
@@ -44,8 +45,22 @@ export class ClasseService {
           subjectName: true,
           teacher: true,
           teacherId: true,
-          UsersSubjectClasses: true,
-        }
+          UsersSubjectClasses: {
+            select: {
+              id: true,
+              userId: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                  registration: true,
+                },
+              },
+              assignedAt: true,
+              assignedBy: true,
+            },
+          },
+        },
       })
       .then((classes) => classes)
       .catch(handleError);
@@ -56,6 +71,30 @@ export class ClasseService {
       .findUnique({
         where: {
           id,
+        },
+        select: {
+          id: true,
+          name: true,
+          semester: true,
+          subjectId: true,
+          subjectName: true,
+          teacher: true,
+          teacherId: true,
+          UsersSubjectClasses: {
+            select: {
+              id: true,
+              userId: true,
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                  registration: true,
+                },
+              },
+              assignedAt: true,
+              assignedBy: true,
+            },
+          },
         },
       })
       .then((classe) => classe)
@@ -84,6 +123,9 @@ export class ClasseService {
       .delete({
         where: {
           id,
+        },
+        include: {
+          UsersSubjectClasses: true,
         },
       })
       .then((classe) => classe)
