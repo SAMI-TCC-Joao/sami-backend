@@ -11,6 +11,8 @@ import { ClassesRelationModule } from './classes-relation/classes-relation.modul
 import { IndicatorModule } from './indicator/indicator.module';
 import { GroupModule } from './group/group.module';
 import { MethodologyModule } from './methodology/methodology.module';
+import { EvaluationModule } from './evaluation/evaluation.module';
+import { ResponseModule } from './response/response.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { MethodologyModule } from './methodology/methodology.module';
     IndicatorModule,
     GroupModule,
     MethodologyModule,
+    EvaluationModule,
+    ResponseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

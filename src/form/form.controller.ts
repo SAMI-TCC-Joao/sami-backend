@@ -40,6 +40,14 @@ export class FormController {
     return this.formService.create(dto, userLogged);
   }
 
+  @Get('template')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all template forms' })
+  findAllTemplates() {
+    return this.formService.findAllTemplates();
+  }
+
   @Get(':email/')
   @UseGuards(AuthGuard())
   @ApiBearerAuth()

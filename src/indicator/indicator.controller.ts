@@ -7,11 +7,17 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { IndicatorService } from './indicator.service';
 import { CreateIndicatorDto } from './dto/create-indicator.dto';
 import { UpdateIndicatorDto } from './dto/update-indicator.dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
 import { isAllowed, isAllowedOrIsMeEmail } from 'src/lib/authLib';
@@ -72,8 +78,13 @@ export class IndicatorController {
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get a indicator by id' })
-  findOne(@Param('id') id: string, @LoggedUser() userLogged: User) {
-    return this.indicatorService.findOne(id, userLogged);
+  @ApiQuery({ name: 'analyses', required: false, type: Boolean })
+  findOne(
+    @Param('id') id: string,
+    @LoggedUser() userLogged: User,
+    @Query('analyses') analyses: boolean,
+  ) {
+    return this.indicatorService.findOne(id, userLogged, analyses);
   }
 
   @Patch(':id')

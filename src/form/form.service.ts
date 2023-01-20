@@ -96,6 +96,34 @@ export class FormService {
       .catch(handleError);
   }
 
+  async findAllTemplates() {
+    return await this.prisma.form
+      .findMany({
+        where: {
+          user: {
+            userType: userType.admin.value,
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          random: true,
+          createdAt: true,
+          updatedAt: true,
+          questions: true,
+          userId: true,
+          indicatorId: false,
+        },
+      })
+      .then((forms) => {
+        return forms.sort((a, b) => {
+          return a.updatedAt > b.updatedAt ? -1 : 1;
+        });
+      })
+      .catch(handleError);
+  }
+
   async findOne(id: string, user: User) {
     const form = await this.prisma.form
       .findUnique({
@@ -158,14 +186,44 @@ export class FormService {
         data,
       })
       .then(async (form) => {
-        await this.prisma.question.deleteMany({
-          where: {
-            formId: form.id,
-          },
-        });
-
         dto.questions.forEach(async (question) => {
-          await this.questionService.create(question, form.id);
+          await this.prisma.question.upsert({
+            where: {
+              id: question.id,
+            },
+            update: {
+              singleAnswer: question.singleAnswer,
+              title: question.title,
+              style: question.style,
+              random: question.random,
+              image: question.image,
+              order: question.order,
+              type: question.type,
+              mandatory: question.mandatory,
+              form: {
+                connect: {
+                  id: form.id,
+                },
+              },
+              options: question.options,
+            },
+            create: {
+              singleAnswer: question.singleAnswer,
+              title: question.title,
+              style: question.style,
+              random: question.random,
+              image: question.image,
+              order: question.order,
+              type: question.type,
+              mandatory: question.mandatory,
+              form: {
+                connect: {
+                  id: form.id,
+                },
+              },
+              options: question.options,
+            },
+          });
         });
 
         return await this.prisma.form.findUnique({

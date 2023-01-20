@@ -24,27 +24,29 @@ model SubjectClass {
   evaluations         Evaluations[]
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @default(now()) @updatedAt
+  QuestionResponse    QuestionResponse[]
 }
 
 model User {
-  id           String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  email        String                @unique
-  name         String
-  password     String
-  token        String?
-  registration String                @unique
-  userType     String
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @default(now()) @updatedAt
-  newUser      Boolean               @default(true)
-  tokenChange  String?
-  forms        Form[]
-  SubjectClass SubjectClass[]
-  takenclasses UsersSubjectClasses[]
-  indicators   Indicator[]
-  methodology  Methodology[]
-  group        Group[]
-  response     Response[]
+  id               String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email            String                @unique
+  name             String
+  password         String
+  token            String?
+  registration     String                @unique
+  userType         String
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @default(now()) @updatedAt
+  newUser          Boolean               @default(true)
+  tokenChange      String?
+  forms            Form[]
+  SubjectClass     SubjectClass[]
+  takenclasses     UsersSubjectClasses[]
+  indicators       Indicator[]
+  methodology      Methodology[]
+  group            Group[]
+  response         Response[]
+  QuestionResponse QuestionResponse[]
 }
 
 model UsersSubjectClasses {
@@ -58,36 +60,37 @@ model UsersSubjectClasses {
 }
 
 model Form {
-  id          String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id          String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name        String
   description String
   random      Boolean
   questions   Question[]
-  user        User        @relation(fields: [userId], references: [id])
-  userId      String      @db.Uuid
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @default(now()) @updatedAt
+  user        User          @relation(fields: [userId], references: [id])
+  userId      String        @db.Uuid
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
   evaluation  Evaluations[]
-  Indicator   Indicator?  @relation(fields: [indicatorId], references: [id], onDelete: Cascade)
-  indicatorId String?     @db.Uuid
+  Indicator   Indicator?    @relation(fields: [indicatorId], references: [id], onDelete: Cascade)
+  indicatorId String?       @db.Uuid
 }
 
 model Question {
-  id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  singleAnswer Boolean
-  title        String
-  subtitle     String?
-  style        Json?
-  image        String?
-  order        Float
-  type         String
-  mandatory    Boolean
-  form         Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
-  formId       String   @db.Uuid
-  options      Json?
-  random       Boolean
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now()) @updatedAt
+  id               String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  singleAnswer     Boolean
+  title            String
+  subtitle         String?
+  style            Json?
+  image            String?
+  order            Float
+  type             String
+  mandatory        Boolean
+  form             Form               @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId           String             @db.Uuid
+  options          Json?
+  random           Boolean
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @default(now()) @updatedAt
+  QuestionResponse QuestionResponse[]
 }
 
 model Methodology {
@@ -111,43 +114,60 @@ model Group {
 }
 
 model Indicator {
-  id            String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id            String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name          String
   description   String
   evaluations   Evaluations[]
-  user          User         @relation(fields: [userId], references: [id])
-  userId        String       @db.Uuid
-  methodology   Methodology  @relation(fields: [methodologyId], references: [id])
-  methodologyId String       @db.Uuid
-  group         Group        @relation(fields: [groupId], references: [id])
-  groupId       String       @db.Uuid
+  user          User          @relation(fields: [userId], references: [id])
+  userId        String        @db.Uuid
+  methodology   Methodology   @relation(fields: [methodologyId], references: [id])
+  methodologyId String        @db.Uuid
+  group         Group         @relation(fields: [groupId], references: [id])
+  groupId       String        @db.Uuid
   forms         Form[]
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @default(now()) @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @default(now()) @updatedAt
 }
 
 model Evaluations {
   id          String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   form        Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
-  formId      String       @unique @db.Uuid
-  indicator   Indicator    @relation(fields: [indicatorId], references: [id])
+  formId      String       @db.Uuid
+  indicator   Indicator    @relation(fields: [indicatorId], references: [id], onDelete: Cascade)
   indicatorId String       @db.Uuid
   initialDate DateTime
   finalDate   DateTime
+  responses   Int          @default(0)
   class       SubjectClass @relation(fields: [classId], references: [id])
   classId     String       @db.Uuid
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @default(now()) @updatedAt
   response    Response[]
+  repeat      Json
 }
 
 model Response {
-  id           String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  evaluation   Evaluations @relation(fields: [evaluationId], references: [id])
-  evaluationId String     @db.Uuid
-  user         User       @relation(fields: [userId], references: [id])
-  userId       String     @db.Uuid
-  answers      Json
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @default(now()) @updatedAt
+  id               String             @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  evaluation       Evaluations        @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  evaluationId     String             @db.Uuid
+  user             User               @relation(fields: [userId], references: [id])
+  userId           String             @db.Uuid
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @default(now()) @updatedAt
+  QuestionResponse QuestionResponse[]
+}
+
+model QuestionResponse {
+  id         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  response   Response     @relation(fields: [responseId], references: [id])
+  responseId String       @db.Uuid
+  question   Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String       @db.Uuid
+  user       User         @relation(fields: [userId], references: [id])
+  userId     String       @db.Uuid
+  answer     Json
+  class      SubjectClass @relation(fields: [classId], references: [id])
+  classId    String       @db.Uuid
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @default(now()) @updatedAt
 }

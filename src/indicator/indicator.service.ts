@@ -241,7 +241,7 @@ export class IndicatorService {
     return indicatorsOrdered;
   }
 
-  async findOne(id: string, user: User) {
+  async findOne(id: string, user: User, analyses = false) {
     const indicator = await this.prisma.indicator
       .findUnique({
         where: {
@@ -260,13 +260,53 @@ export class IndicatorService {
             select: {
               id: true,
               name: true,
+              ...(analyses // tirar
+                ? {
+                    questions: {
+                      select: {
+                        id: true,
+                        title: true,
+                        subtitle: true,
+                        type: true,
+                        mandatory: true,
+                        options: true,
+                        order: true,
+                        style: true,
+                        random: true,
+                        singleAnswer: true,
+                        QuestionResponse: {
+                          select: {
+                            id: true,
+                            response: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            userId: true,
+                            answer: true,
+                            class: { select: { name: true } },
+                            user: {
+                              select: {
+                                id: true,
+                                name: true,
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  }
+                : {}),
               evaluation: {
                 select: {
                   id: true,
                   createdAt: true,
-                  response: true,
+                  ...(!analyses
+                    ? {
+                        response: true,
+                      }
+                    : {}),
                   initialDate: true,
                   finalDate: true,
+                  responses: true,
                   class: {
                     select: {
                       name: true,

@@ -20,6 +20,13 @@ import crypto from 'crypto-js';
 import { JwtPayload } from './entities/jwtChangePassword.entity';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { Prisma } from '@prisma/client';
+import {
+  ChangeEmail,
+  ChangePasswordEmail,
+  FirstAcessEmail,
+  RegisterNewUserEmail,
+  SendEmailForgotPassword,
+} from 'src/utils/emailsTemplates.utils';
 
 @Injectable()
 export class UserService {
@@ -89,6 +96,7 @@ export class UserService {
           subject: 'Cadastro de usuário',
           text: `Olá ${createUser.name}, seu cadastro foi realizado com sucesso pelo usuário ${userLogged.name}. Sua senha é ${createUser.registration}
                   aproveite e valide a sua senha aqui: {AREA EM DESENVOLVIMENTO} localhost/user/first-access/${tokenUrl}.`, // aqui vai a url do front que aponta para a rota firstAccess, se o user n respeitar isso e tentar fazer login, o front vai redirecionar para a mesma pagina de cadastro de senha
+          html: RegisterNewUserEmail(createUser.name, tokenUrl),
         };
 
         transporter.sendMail(mailData, function (err, info) {
@@ -311,6 +319,7 @@ export class UserService {
         to: user.email,
         subject: 'Alteração de senha - primeiro acesso',
         text: `Olá ${user.name}. Sua senha já foi alterada, agora já pode fazer login na aplicação!`,
+        html: FirstAcessEmail(user.name),
       };
 
       transporter.sendMail(mailData, function (err, info) {
@@ -382,6 +391,7 @@ export class UserService {
       to: user.email,
       subject: 'Alteração de senha',
       text: `altere a senha aqui: {AREA EM DESENVOLVIMENTO} http://localhost:3000/changePassword/${tokenToUrl}`,
+      html: SendEmailForgotPassword(tokenToUrl),
     };
 
     transporter.sendMail(mailData, async function (err, info) {
@@ -476,6 +486,7 @@ export class UserService {
           to: user.email,
           subject: 'Senha alterada',
           text: `Olá ${user.name}. Sua senha já foi alterada, agora já pode fazer login na aplicação!`,
+          html: ChangePasswordEmail(),
         };
 
         transporter.sendMail(mailData, function (err, info) {
@@ -573,6 +584,12 @@ export class UserService {
             subject: 'Alteração de email',
             text: `Olá ${updatedUser.name}, seu cadastro foi atualizado, como o email foi alterado, sua senha foi resetada também. Sua senha é ${updatedUser.registration}
                       aproveite e valide a sua senha aqui: {AREA EM DESENVOLVIMENTO} localhost/user/first-access/${tokenUrl}.`, // aqui vai a url do front que aponta para a rota firstAccess, se o user n respeitar isso e tentar fazer login, o front vai redirecionar para a mesma pagina de cadastro de senha
+            html: ChangeEmail(
+              updatedUser.name,
+              updatedUser.email,
+              updatedUser.registration,
+              tokenUrl
+            ),
           };
 
           transporter.sendMail(mailData, function (err, info) {

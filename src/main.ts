@@ -25,6 +25,13 @@ async function bootstrap() {
     .addTag('Users')
     .addTag('Classes')
     .addTag('Classes-Relation')
+    .addTag('Indicators')
+    .addTag('Forms')
+    .addTag('Questions')
+    .addTag('Evaluations')
+    .addTag('Responses')
+    .addTag('Groups')
+    .addTag('Methodologies')
     .addTag('Public')
     .addBearerAuth()
     .build();

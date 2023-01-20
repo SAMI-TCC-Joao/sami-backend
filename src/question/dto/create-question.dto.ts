@@ -19,6 +19,14 @@ export class CreateQuestionDto {
   singleAnswer: boolean;
 
   @IsString()
+  @IsUUID()
+  @ApiProperty({
+    description: 'Question id',
+    example: '1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p',
+  })
+  id?: string;
+
+  @IsString()
   @IsNotEmpty()
   @ApiProperty({
     description: 'Question title',

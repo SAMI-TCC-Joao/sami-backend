@@ -1,6 +1,7 @@
 # compiled output
 /dist
 /node_modules
+/entity_diagram.pdf
 
 # Logs
 logs
@@ -39,5 +40,5 @@ lerna-debug.log*
 /TODO.md
 /insert-sql.txt
 
-/.env
+.env
 yarn.lock
