@@ -14,7 +14,7 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 import { User } from 'src/user/entities/user.entity';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
 import enums from '../lib/enumLib';
-import { isAllowed, isAllowedOrIsMeEmail } from 'src/lib/authLib';
+import { isAllowed, isAllowedOrIsMe } from 'src/lib/authLib';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -34,13 +34,13 @@ export class GroupController {
     return this.groupService.create(dto, userLogged);
   }
 
-  @Get(':email')
+  @Get()
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all group by user' })
-  findAll(@Param('email') email: string, @LoggedUser() userLogged: User) {
-    isAllowedOrIsMeEmail(userType.admin.value, userLogged, email);
-    return this.groupService.findAll(email);
+  findAll(@LoggedUser() userLogged: User) {
+    isAllowedOrIsMe(userType.admin.value, userLogged, userLogged.id);
+    return this.groupService.findAll(userLogged);
   }
 
   @Get('one/:id')

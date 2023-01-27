@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from 'src/user/entities/user.entity';
 import { handleError } from 'src/utils/errorHandlers/customErrorList';
-import { CreateIndicatorDto } from './dto/create-indicator.dto';
+import { CreateIndicatorDto, teste } from './dto/create-indicator.dto';
 import { UpdateIndicatorDto } from './dto/update-indicator.dto';
 import { isAllowedOrIsMe } from 'src/lib/authLib';
 import { RelationIndicatorDto } from './dto/relation-indicator.dto';
@@ -214,11 +214,11 @@ export class IndicatorService {
       .catch(handleError);
   }
 
-  async findAll(email: string) {
+  async findAll(userLogged: User) {
     const indicators = await this.prisma.indicator.findMany({
       where: {
         user: {
-          email,
+          id: userLogged.id,
         },
       },
       select: {
@@ -241,7 +241,7 @@ export class IndicatorService {
     return indicatorsOrdered;
   }
 
-  async findOne(id: string, user: User, analyses = false) {
+  async findOne(id: string, user: User, analyses = false, dto?: teste) {
     const indicator = await this.prisma.indicator
       .findUnique({
         where: {
@@ -260,7 +260,7 @@ export class IndicatorService {
             select: {
               id: true,
               name: true,
-              ...(analyses // tirar
+              ...(analyses
                 ? {
                     questions: {
                       select: {
@@ -275,6 +275,27 @@ export class IndicatorService {
                         random: true,
                         singleAnswer: true,
                         QuestionResponse: {
+                          ...(dto?.usersId
+                            ? {
+                                where: {
+                                  user: {
+                                    id: {
+                                      in: dto.usersId,
+                                    },
+                                  },
+                                },
+                              }
+                            : dto?.classId
+                            ? {
+                                where: {
+                                  class: {
+                                    id: {
+                                      in: dto.classId,
+                                    },
+                                  },
+                                },
+                              }
+                            : {}),
                           select: {
                             id: true,
                             response: true,

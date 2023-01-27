@@ -21,7 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { User } from 'src/user/entities/user.entity';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
-import { isAllowed, isAllowedOrIsMeEmail } from 'src/lib/authLib';
+import { isAllowed, isAllowedOrIsMe } from 'src/lib/authLib';
 import enums from '../lib/enumLib';
 
 const { userType } = enums;
@@ -40,13 +40,22 @@ export class EvaluationController {
     return this.evaluationService.create(dto);
   }
 
-  @Get('all/:email')
+  @Get('all')
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all evaluations by user' })
-  findAll(@Param('email') email: string, @LoggedUser() userLogged: User) {
-    isAllowedOrIsMeEmail(userType.admin.value, userLogged, email);
-    return this.evaluationService.findAll(email);
+  findAll(@LoggedUser() userLogged: User) {
+    isAllowedOrIsMe(userType.admin.value, userLogged, userLogged.id);
+    return this.evaluationService.findAll(userLogged);
+  }
+
+  @Get('student')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all evaluations to respond by user' })
+  findAllStudent(@LoggedUser() userLogged: User) {
+    isAllowedOrIsMe(userType.admin.value, userLogged, userLogged.id);
+    return this.evaluationService.findAllStudent(userLogged);
   }
 
   @Get('one/:id/')

@@ -21,7 +21,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/user/entities/user.entity';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
-import { isAllowed, isAllowedOrIsMeEmail } from 'src/lib/authLib';
+import { isAllowed, isAllowedOrIsMe } from 'src/lib/authLib';
 import enums from '../lib/enumLib';
 
 const { userType } = enums;
@@ -48,18 +48,17 @@ export class FormController {
     return this.formService.findAllTemplates();
   }
 
-  @Get(':email/')
+  @Get('/')
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all forms by user' })
   @ApiQuery({ name: 'withIndicator', required: false, type: Boolean })
   findAll(
-    @Param('email') email: string,
     @LoggedUser() userLogged: User,
     @Query('withIndicator') withIndicator: boolean,
   ) {
-    isAllowedOrIsMeEmail(userType.admin.value, userLogged, email);
-    return this.formService.findAll(email, `${withIndicator}`);
+    isAllowedOrIsMe(userType.admin.value, userLogged, userLogged.id);
+    return this.formService.findAll(userLogged, `${withIndicator}`);
   }
 
   @Get('one/:id')

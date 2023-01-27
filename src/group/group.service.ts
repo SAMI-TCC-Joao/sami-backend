@@ -23,12 +23,12 @@ export class GroupService {
       .catch(handleError);
   }
 
-  async findAll(email: string) {
+  async findAll(userLogged: User) {
     return this.prisma.group
       .findMany({
         where: {
           user: {
-            email,
+            id: userLogged.id,
           },
         },
       })

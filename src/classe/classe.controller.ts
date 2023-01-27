@@ -34,12 +34,20 @@ export class ClasseController {
     return this.classeService.create(dto, userLogged);
   }
 
-  @Get(':email')
+  @Get()
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Find all classes by user email' })
-  findAll(@Param('email') email: string) {
-    return this.classeService.findAll(email);
+  findAll(@LoggedUser() userLogged: User) {
+    return this.classeService.findAll(userLogged);
+  }
+
+  @Get('indicator/:id')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Find all classes in indicator by id' })
+  findEvaluationClass(@Param('id') id: string) {
+    return this.classeService.findIndicatorClass(id);
   }
 
   @Get('one/:id')

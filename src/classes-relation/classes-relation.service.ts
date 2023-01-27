@@ -30,6 +30,17 @@ export class ClassesRelationService {
       throw new BadRequestException('Classe não encontrada!');
     }
 
+    const relationVerify = this.prisma.usersSubjectClasses.findMany({
+      where: {
+        userId: dto.userId,
+        subjectClassId: dto.subjectClassId,
+      },
+    });
+
+    if (relationVerify) {
+      throw new BadRequestException('Relação já existente!');
+    }
+
     return this.prisma.usersSubjectClasses
       .create({
         data: {

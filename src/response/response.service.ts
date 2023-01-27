@@ -53,11 +53,11 @@ export class ResponseService {
     return 'Avaliação criada com sucesso';
   }
 
-  async findAll(email: string) {
+  async findAll(userLogged: User) {
     const evaluations = await this.prisma.response.findMany({
       where: {
         user: {
-          email,
+          id: userLogged.id,
         },
       },
     });

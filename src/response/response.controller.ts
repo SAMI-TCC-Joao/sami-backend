@@ -6,7 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/user/entities/user.entity';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
 import enums from '../lib/enumLib';
-import { isAllowed, isAllowedOrIsMeEmail } from 'src/lib/authLib';
+import { isAllowed, isAllowedOrIsMe } from 'src/lib/authLib';
 
 const { userType } = enums;
 
@@ -24,13 +24,13 @@ export class ResponseController {
     return this.responseService.create(dto, userLogged);
   }
 
-  @Get('all/:email')
+  @Get()
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Find all responses by email' })
-  findAll(@LoggedUser() userLogged: User, @Param('email') email: string) {
-    isAllowedOrIsMeEmail(userType.admin.value, userLogged, email);
-    return this.responseService.findAll(email);
+  @ApiOperation({ summary: 'Find all responses by user' })
+  findAll(@LoggedUser() userLogged: User) {
+    isAllowedOrIsMe(userType.admin.value, userLogged, userLogged.id);
+    return this.responseService.findAll(userLogged);
   }
 
   @Get('one/:id')
@@ -40,14 +40,4 @@ export class ResponseController {
   findOne(@Param('id') id: string, @LoggedUser() userLogged: User) {
     return this.responseService.findOne(id, userLogged);
   }
-
-  /* @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateResponseDto) {
-    return this.responseService.update(+id, dto);
-  } */
-
-  /* @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.responseService.remove(+id);
-  } */
 }

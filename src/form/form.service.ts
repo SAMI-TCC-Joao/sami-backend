@@ -59,17 +59,17 @@ export class FormService {
       .catch(handleError);
   }
 
-  async findAll(email: string, withIndicator: string) {
+  async findAll(userLogged: User, withIndicator: string) {
     const where =
       withIndicator === 'true'
         ? {
             user: {
-              email,
+              id: userLogged.id,
             },
           }
         : {
             user: {
-              email,
+              id: userLogged.id,
             },
             indicatorId: null,
           };

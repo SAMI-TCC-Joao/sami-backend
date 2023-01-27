@@ -42,12 +42,48 @@ export class EvaluationService {
       .catch(handleError);
   }
 
-  async findAll(email: string) {
+  async findAll(userLogged: User) {
     const evaluations = await this.prisma.evaluations.findMany({
       where: {
         indicator: {
           user: {
-            email,
+            id: userLogged.id,
+          },
+        },
+      },
+      select: {
+        id: true,
+        classId: true,
+        form: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        initialDate: true,
+        finalDate: true,
+        repeat: true,
+        createdAt: true,
+      },
+    });
+
+    if (!evaluations) {
+      throw new NotFoundException('Nenhuma avaliação encontrada');
+    }
+
+    return evaluations;
+  }
+
+  async findAllStudent(userLogged: User) {
+    const evaluations = await this.prisma.evaluations.findMany({
+      where: {
+        class: {
+          UsersSubjectClasses: {
+            some: {
+              user: {
+                id: userLogged.id,
+              },
+            },
           },
         },
       },
@@ -119,8 +155,6 @@ export class EvaluationService {
     if (!evaluation) {
       throw new NotFoundException('Avaliação não encontrada');
     }
-
-    isAllowedOrIsMe(userType.admin.value, user, evaluation.indicator.userId);
 
     return evaluation;
   }

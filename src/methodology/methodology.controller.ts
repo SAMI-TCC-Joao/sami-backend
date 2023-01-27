@@ -12,7 +12,7 @@ import { MethodologyService } from './methodology.service';
 import { CreateMethodologyDto } from './dto/create-methodology.dto';
 import { UpdateMethodologyDto } from './dto/update-methodology.dto';
 import enums from '../lib/enumLib';
-import { isAllowed, isAllowedOrIsMeEmail } from 'src/lib/authLib';
+import { isAllowed, isAllowedOrIsMe } from 'src/lib/authLib';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/user/entities/user.entity';
@@ -34,13 +34,13 @@ export class MethodologyController {
     return this.methodologyService.create(dto, userLogged);
   }
 
-  @Get(':email')
+  @Get()
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all methodology by user' })
-  findAll(@Param('email') email: string, @LoggedUser() userLogged: User) {
-    isAllowedOrIsMeEmail(userType.admin.value, userLogged, email);
-    return this.methodologyService.findAll(email);
+  findAll(@LoggedUser() userLogged: User) {
+    isAllowedOrIsMe(userType.admin.value, userLogged, userLogged.id);
+    return this.methodologyService.findAll(userLogged);
   }
 
   @Get('one/:id')

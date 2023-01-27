@@ -29,12 +29,12 @@ export class ClasseService {
       .catch(handleError);
   }
 
-  findAll(email: string) {
+  findAll(userLogged: User) {
     return this.prisma.subjectClass
       .findMany({
         where: {
           teacher: {
-            email,
+            id: userLogged.id,
           },
         },
         select: {
@@ -64,6 +64,60 @@ export class ClasseService {
         },
       })
       .then((classes) => classes)
+      .catch(handleError);
+  }
+
+  async findIndicatorClass(id: string) {
+    // retornar todas as classes dentro de todos os evaluations dentro do indicator
+
+    return this.prisma.subjectClass
+      .findMany({
+        where: {
+          evaluations: {
+            some: {
+              indicatorId: id,
+            },
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+        },
+      })
+      .then(async (classes) => {
+        const users = await this.prisma.user.findMany({
+          where: {
+            QuestionResponse: {
+              some: {
+                class: {
+                  id: {
+                    in: classes.map((classe) => classe.id),
+                  },
+                },
+              },
+            },
+          },
+          select: {
+            id: true,
+            name: true,
+            takenclasses: {
+              select: {
+                subjectClass: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        return {
+          classes,
+          users,
+        };
+      })
       .catch(handleError);
   }
 

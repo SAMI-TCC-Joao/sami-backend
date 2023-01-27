@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { IndicatorService } from './indicator.service';
-import { CreateIndicatorDto } from './dto/create-indicator.dto';
+import { CreateIndicatorDto, teste } from './dto/create-indicator.dto';
 import { UpdateIndicatorDto } from './dto/update-indicator.dto';
 import {
   ApiBearerAuth,
@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { LoggedUser } from 'src/auth/logged-user.decorator';
-import { isAllowed, isAllowedOrIsMeEmail } from 'src/lib/authLib';
+import { isAllowed, isAllowedOrIsMe } from 'src/lib/authLib';
 import { User } from 'src/user/entities/user.entity';
 import { RelationIndicatorDto } from './dto/relation-indicator.dto';
 import enums from '../lib/enumLib';
@@ -65,13 +65,13 @@ export class IndicatorController {
     return this.indicatorService.removeForm(id, dto, userLogged);
   }
 
-  @Get(':email')
+  @Get()
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all indicators by user' })
-  findAll(@Param('email') email: string, @LoggedUser() userLogged: User) {
-    isAllowedOrIsMeEmail(userType.admin.value, userLogged, email);
-    return this.indicatorService.findAll(email);
+  findAll(@LoggedUser() userLogged: User) {
+    isAllowedOrIsMe(userType.admin.value, userLogged, userLogged.id);
+    return this.indicatorService.findAll(userLogged);
   }
 
   @Get('one/:id')
@@ -85,6 +85,18 @@ export class IndicatorController {
     @Query('analyses') analyses: boolean,
   ) {
     return this.indicatorService.findOne(id, userLogged, analyses);
+  }
+
+  @Post('one/:id')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get a indicator by id with body to filter' })
+  findOneWithBody(
+    @Param('id') id: string,
+    @LoggedUser() userLogged: User,
+    @Body() dto: teste,
+  ) {
+    return this.indicatorService.findOne(id, userLogged, true, dto);
   }
 
   @Patch(':id')

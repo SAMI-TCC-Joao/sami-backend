@@ -23,12 +23,12 @@ export class MethodologyService {
       .catch(handleError);
   }
 
-  async findAll(email: string) {
+  async findAll(userLogged: User) {
     return this.prisma.methodology
       .findMany({
         where: {
           user: {
-            email,
+            id: userLogged.id,
           },
         },
       })
