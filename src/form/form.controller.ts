@@ -43,7 +43,6 @@ export class FormController {
   @Get('template')
   @ApiOperation({ summary: 'Get all template forms' })
   findAllTemplates() {
-    console.log('ta entrando no template');
     return this.formService.findAllTemplates();
   }
 
@@ -56,7 +55,6 @@ export class FormController {
     @LoggedUser() userLogged: User,
     @Query('withIndicator') withIndicator: boolean,
   ) {
-    console.log('ta entrando no get geral');
     isAllowedOrIsMe(userType.admin.value, userLogged, userLogged.id);
     return this.formService.findAll(userLogged, `${withIndicator}`);
   }
