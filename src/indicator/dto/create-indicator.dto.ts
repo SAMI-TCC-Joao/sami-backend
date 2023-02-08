@@ -46,7 +46,7 @@ export class CreateIndicatorDto {
   formsId: string[];
 }
 
-export class teste {
+export class IndicatorDto {
   @IsUUID(undefined, { each: true })
   @IsOptional()
   @ApiProperty({

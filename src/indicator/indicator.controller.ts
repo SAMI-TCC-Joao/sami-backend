@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { IndicatorService } from './indicator.service';
-import { CreateIndicatorDto, teste } from './dto/create-indicator.dto';
+import { CreateIndicatorDto, IndicatorDto } from './dto/create-indicator.dto';
 import { UpdateIndicatorDto } from './dto/update-indicator.dto';
 import {
   ApiBearerAuth,
@@ -94,7 +94,7 @@ export class IndicatorController {
   findOneWithBody(
     @Param('id') id: string,
     @LoggedUser() userLogged: User,
-    @Body() dto: teste,
+    @Body() dto: IndicatorDto,
   ) {
     return this.indicatorService.findOne(id, userLogged, true, dto);
   }

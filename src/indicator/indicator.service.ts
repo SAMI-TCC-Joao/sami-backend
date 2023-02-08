@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from 'src/user/entities/user.entity';
 import { handleError } from 'src/utils/errorHandlers/customErrorList';
-import { CreateIndicatorDto, teste } from './dto/create-indicator.dto';
+import { CreateIndicatorDto, IndicatorDto } from './dto/create-indicator.dto';
 import { UpdateIndicatorDto } from './dto/update-indicator.dto';
 import { isAllowedOrIsMe } from 'src/lib/authLib';
 import { RelationIndicatorDto } from './dto/relation-indicator.dto';
@@ -241,7 +241,7 @@ export class IndicatorService {
     return indicatorsOrdered;
   }
 
-  async findOne(id: string, user: User, analyses = false, dto?: teste) {
+  async findOne(id: string, user: User, analyses = false, dto?: IndicatorDto) {
     const indicator = await this.prisma.indicator
       .findUnique({
         where: {

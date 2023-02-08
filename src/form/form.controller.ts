@@ -41,6 +41,7 @@ export class FormController {
   }
 
   @Get('template')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all template forms' })
   findAllTemplates() {
     return this.formService.findAllTemplates();
