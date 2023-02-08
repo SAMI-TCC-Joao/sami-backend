@@ -9,8 +9,8 @@ import { CreateClassesRelationDto } from './dto/create-classes-relation.dto';
 export class ClassesRelationService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(dto: CreateClassesRelationDto, userLogged: User) {
-    const userVerify = this.prisma.user.findUnique({
+  async create(dto: CreateClassesRelationDto, userLogged: User) {
+    const userVerify = await this.prisma.user.findUnique({
       where: {
         id: dto.userId,
       },
@@ -20,7 +20,7 @@ export class ClassesRelationService {
       throw new BadRequestException('Usuário não encontrado!');
     }
 
-    const classVerify = this.prisma.subjectClass.findUnique({
+    const classVerify = await this.prisma.subjectClass.findUnique({
       where: {
         id: dto.subjectClassId,
       },
@@ -30,14 +30,14 @@ export class ClassesRelationService {
       throw new BadRequestException('Classe não encontrada!');
     }
 
-    const relationVerify = this.prisma.usersSubjectClasses.findMany({
+    const relationVerify = await this.prisma.usersSubjectClasses.findMany({
       where: {
         userId: dto.userId,
         subjectClassId: dto.subjectClassId,
       },
     });
 
-    if (relationVerify) {
+    if (relationVerify.length > 0) {
       throw new BadRequestException('Relação já existente!');
     }
 
