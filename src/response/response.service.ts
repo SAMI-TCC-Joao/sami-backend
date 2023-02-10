@@ -50,7 +50,7 @@ export class ResponseService {
       },
     });
 
-    return 'Avaliação criada com sucesso';
+    return 'Aplicação criada com sucesso';
   }
 
   async findAll(userLogged: User) {
@@ -63,7 +63,7 @@ export class ResponseService {
     });
 
     if (!evaluations) {
-      throw new NotFoundException('Nenhuma avaliação encontrada');
+      throw new NotFoundException('Nenhuma aplicação encontrada');
     }
 
     return evaluations;
@@ -77,7 +77,7 @@ export class ResponseService {
     });
 
     if (!evaluation) {
-      throw new NotFoundException('Avaliação não encontrada');
+      throw new NotFoundException('Aplicação não encontrada');
     }
 
     isAllowedOrIsMe(userType.admin.value, user, evaluation.userId);

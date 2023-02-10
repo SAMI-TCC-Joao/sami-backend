@@ -72,7 +72,7 @@ export class EvaluationService {
     });
 
     if (!evaluations) {
-      throw new NotFoundException('Nenhuma avaliação encontrada');
+      throw new NotFoundException('Nenhuma aplicação encontrada');
     }
 
     return evaluations;
@@ -141,7 +141,7 @@ export class EvaluationService {
     console.log(evaluationsFiltered);
 
     if (!evaluationsFiltered) {
-      throw new NotFoundException('Nenhuma avaliação encontrada');
+      throw new NotFoundException('Nenhuma aplicação encontrada');
     }
 
     return evaluationsFiltered;
@@ -190,7 +190,7 @@ export class EvaluationService {
       .catch(handleError);
 
     if (!evaluation) {
-      throw new NotFoundException('Avaliação não encontrada');
+      throw new NotFoundException('Aplicação não encontrada');
     }
 
     return evaluation;
@@ -219,7 +219,7 @@ export class EvaluationService {
       .catch(handleError);
 
     if (!evaluation) {
-      throw new NotFoundException('Avaliação não encontrada');
+      throw new NotFoundException('Aplicação não encontrada');
     }
 
     isAllowedOrIsMe(userType.admin.value, user, evaluation.indicator.userId);
@@ -278,7 +278,7 @@ export class EvaluationService {
       .catch(handleError);
 
     if (!evaluation) {
-      throw new NotFoundException('Avaliação não encontrada');
+      throw new NotFoundException('Aplicação não encontrada');
     }
 
     isAllowedOrIsMe(userType.admin.value, user, evaluation.indicator.userId);
