@@ -27,6 +27,10 @@ import {
   RegisterNewUserEmail,
   SendEmailForgotPassword,
 } from 'src/utils/emailsTemplates.utils';
+import { isAllowedOrIsMeEmail } from 'src/lib/authLib';
+import enums from '../lib/enumLib';
+
+const { userType } = enums;
 
 @Injectable()
 export class UserService {
@@ -196,6 +200,25 @@ export class UserService {
     );
 
     return userData;
+  }
+
+  async findTeacher() {
+    return this.prisma.user
+      .findMany({
+        where: { userType: 'teacher' },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          registration: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      })
+      .then((user) => {
+        return user;
+      })
+      .catch(handleError);
   }
 
   async findOne(email: string) {
@@ -588,7 +611,7 @@ export class UserService {
               updatedUser.name,
               updatedUser.email,
               updatedUser.registration,
-              tokenUrl
+              tokenUrl,
             ),
           };
 
@@ -608,6 +631,19 @@ export class UserService {
     } catch (error) {
       return handleError(error);
     }
+  }
+
+  async updateId(id: string, dto: UpdateUserDto, user: User) {
+    const userVerify = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    isAllowedOrIsMeEmail(userType.admin.value, user, userVerify.email);
+
+    if (!userVerify) {
+      throw new BadRequestException('Usuário não encontrado');
+    }
+
+    this.update(userVerify.email, dto);
   }
 
   async remove(id: string, user: User) {

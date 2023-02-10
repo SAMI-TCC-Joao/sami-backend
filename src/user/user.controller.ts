@@ -70,7 +70,7 @@ export class UserController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Find all users by email logged user' })
   findAll() {
-    return this.userService.findAll()
+    return this.userService.findAll();
   }
 
   @Get()
@@ -81,6 +81,15 @@ export class UserController {
     return this.userService.findLogged(user);
   }
 
+  @Get('teacher')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all teachers' })
+  findTeacher(@LoggedUser() userLogged: User) {
+    isAllowed([userType.admin.value], userLogged);
+    return this.userService.findTeacher();
+  }
+
   @Get(':email')
   @UseGuards(AuthGuard())
   @ApiBearerAuth()
@@ -88,6 +97,18 @@ export class UserController {
   findOne(@Param('email') email: string, @LoggedUser() userLogged: User) {
     isAllowed([userType.admin.value, userType.teacher.value], userLogged);
     return this.userService.findOne(email);
+  }
+
+  @Patch('id/:id')
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update a user' })
+  updateId(
+    @Param('id') id: string,
+    @Body() dto: UpdateUserDto,
+    @LoggedUser() user: User,
+  ) {
+    return this.userService.updateId(id, dto, user);
   }
 
   @Patch(':email')

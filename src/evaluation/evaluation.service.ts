@@ -6,6 +6,10 @@ import { CreateEvaluationDto } from './dto/create-evaluation.dto';
 import { UpdateEvaluationDto } from './dto/update-evaluation.dto';
 import enums from '../lib/enumLib';
 import { isAllowedOrIsMe } from 'src/lib/authLib';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
+
+dayjs.extend(isBetween);
 
 const { userType } = enums;
 
@@ -103,11 +107,44 @@ export class EvaluationService {
       },
     });
 
-    if (!evaluations) {
+    const responses = await this.prisma.response.findMany({
+      where: {
+        user: {
+          id: userLogged.id,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: {
+        evaluationId: true,
+        createdAt: true,
+      },
+    });
+
+    const evaluationsFiltered = evaluations.filter((evaluation) => {
+      const response = responses.find(
+        (response) => response.evaluationId === evaluation.id,
+      );
+
+      if (
+        response &&
+        dayjs(response?.createdAt).format('DD/MM/YYYY') ===
+          dayjs().format('DD/MM/YYYY')
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
+    console.log(evaluationsFiltered);
+
+    if (!evaluationsFiltered) {
       throw new NotFoundException('Nenhuma avaliação encontrada');
     }
 
-    return evaluations;
+    return evaluationsFiltered;
   }
 
   async findOne(id: string, user: User, withForm = false) {
