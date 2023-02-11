@@ -44,7 +44,7 @@ export class CreateEvaluationDto {
   finalDate: Date;
 
   @IsNotEmpty()
-  @IsBoolean()
+  @ObjectValidator()
   @ApiProperty({
     description: 'Evaluation repeat in the week',
     example: {
@@ -60,7 +60,7 @@ export class CreateEvaluationDto {
   repeat: any;
 
   @IsNotEmpty()
-  @ObjectValidator()
+  @IsBoolean()
   @ApiProperty({
     description: 'Evaluation repeat in the week',
     example: false,
