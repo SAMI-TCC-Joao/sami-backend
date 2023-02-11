@@ -212,7 +212,17 @@ export class EvaluationService {
       throw new NotFoundException('Aplicação não encontrada');
     }
 
-    return evaluation;
+    const questionsFilter = evaluation.form.random
+      ? evaluation.form.questions
+      : evaluation.form.questions.sort((a, b) => a.order - b.order);
+
+    return {
+      ...evaluation,
+      form: {
+        ...evaluation.form,
+        questions: questionsFilter,
+      },
+    };
   }
 
   async update(id: string, dto: UpdateEvaluationDto, user: User) {

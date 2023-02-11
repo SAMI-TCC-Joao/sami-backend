@@ -41,6 +41,7 @@ export class FormController {
   }
 
   @Get('template')
+  @UseGuards(AuthGuard())
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all template forms' })
   findAllTemplates() {
