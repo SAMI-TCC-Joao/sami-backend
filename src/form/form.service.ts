@@ -147,8 +147,6 @@ export class FormService {
       throw new NotFoundException('Formulário não encontrado');
     }
 
-    isAllowedOrIsMe(userType.admin.value, user, form.userId);
-
     const ordered = form.questions.sort((a, b) => a.order - b.order);
 
     return {
