@@ -6,7 +6,7 @@ export const classes: Prisma.SubjectClassCreateInput[] = [
     name: 'Turma C',
     semester: '01-2023',
     subjectName: 'Calculo I',
-    subjectId: 123,
+    subjectId: '123',
     teacher: {
       connect: {
         registration: '123456789',
@@ -18,7 +18,7 @@ export const classes: Prisma.SubjectClassCreateInput[] = [
     name: 'Turma D',
     semester: '01-2023',
     subjectName: 'Logica de programação I',
-    subjectId: 234,
+    subjectId: '234',
     teacher: {
       connect: {
         registration: '123456789',
@@ -30,7 +30,7 @@ export const classes: Prisma.SubjectClassCreateInput[] = [
     name: 'Turma B',
     semester: '02-2023',
     subjectName: 'Algoritmos',
-    subjectId: 345,
+    subjectId: '345',
     teacher: {
       connect: {
         registration: '123456789',
@@ -42,7 +42,7 @@ export const classes: Prisma.SubjectClassCreateInput[] = [
     name: 'Turma A',
     semester: '03-2023',
     subjectName: 'Logica de programação II',
-    subjectId: 456,
+    subjectId: '456',
     teacher: {
       connect: {
         registration: '123456789',
