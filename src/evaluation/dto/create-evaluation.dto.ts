@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsDateString, IsNotEmpty, IsUUID } from 'class-validator';
+import { IsBoolean, IsDateString, IsNotEmpty, IsUUID } from 'class-validator';
 import { ObjectValidator } from 'src/question/dto/questions-json.decorator';
 
 export class CreateEvaluationDto {
@@ -44,7 +44,7 @@ export class CreateEvaluationDto {
   finalDate: Date;
 
   @IsNotEmpty()
-  @ObjectValidator()
+  @IsBoolean()
   @ApiProperty({
     description: 'Evaluation repeat in the week',
     example: {
