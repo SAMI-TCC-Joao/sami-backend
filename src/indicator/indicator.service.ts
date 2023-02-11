@@ -320,6 +320,10 @@ export class IndicatorService {
                 select: {
                   id: true,
                   createdAt: true,
+                  classId: true,
+                  description: true,
+                  shouldRepeat: true,
+                  repeat: true,
                   form: {
                     select: {
                       id: true,

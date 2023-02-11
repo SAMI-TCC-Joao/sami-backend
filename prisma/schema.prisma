@@ -136,6 +136,7 @@ model Evaluations {
   indicator   Indicator    @relation(fields: [indicatorId], references: [id], onDelete: Cascade)
   indicatorId String       @db.Uuid
   initialDate DateTime
+  description String
   finalDate   DateTime
   responses   Int          @default(0)
   class       SubjectClass @relation(fields: [classId], references: [id])

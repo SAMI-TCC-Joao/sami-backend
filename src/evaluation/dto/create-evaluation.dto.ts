@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDateString, IsNotEmpty, IsUUID } from 'class-validator';
+import {
+  IsBoolean,
+  IsDateString,
+  IsNotEmpty,
+  IsUUID,
+  IsString,
+} from 'class-validator';
 import { ObjectValidator } from 'src/question/dto/questions-json.decorator';
 
 export class CreateEvaluationDto {
@@ -10,6 +16,13 @@ export class CreateEvaluationDto {
     example: 'f1e2d3c4-b5a6-7c8d-9e0f-1a2b3c4d5e6f',
   })
   formId: string;
+
+  @IsString()
+  @ApiProperty({
+    description: 'Description',
+    example: 'descrição teste',
+  })
+  description: string;
 
   @IsUUID()
   @IsNotEmpty()
