@@ -320,6 +320,12 @@ export class IndicatorService {
                 select: {
                   id: true,
                   createdAt: true,
+                  form: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
                   ...(!analyses
                     ? {
                         response: true,
