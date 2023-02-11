@@ -6,7 +6,6 @@ import {
   HttpStatus,
   Get,
   UseGuards,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';

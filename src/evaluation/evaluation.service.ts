@@ -94,6 +94,12 @@ export class EvaluationService {
       select: {
         id: true,
         classId: true,
+        class: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         form: {
           select: {
             id: true,
@@ -103,6 +109,7 @@ export class EvaluationService {
         initialDate: true,
         finalDate: true,
         repeat: true,
+        shouldRepeat: true,
         createdAt: true,
       },
     });
@@ -123,22 +130,32 @@ export class EvaluationService {
     });
 
     const evaluationsFiltered = evaluations.filter((evaluation) => {
-      const response = responses.find(
-        (response) => response.evaluationId === evaluation.id,
-      );
+      if (
+        evaluation.shouldRepeat &&
+        !evaluation.repeat[dayjs().format('dddd').toLowerCase()]
+      )
+        return false;
 
       if (
-        response &&
-        dayjs(response?.createdAt).format('DD/MM/YYYY') ===
-          dayjs().format('DD/MM/YYYY')
+        !evaluation.shouldRepeat &&
+        !dayjs().isBetween(evaluation.initialDate, evaluation.finalDate)
       ) {
         return false;
       }
 
+      const alreadyAnswered = responses.find(
+        (response) => response.evaluationId === evaluation.id,
+      );
+
+      if (
+        alreadyAnswered &&
+        dayjs(alreadyAnswered?.createdAt).format('DD/MM/YYYY') ===
+          dayjs().format('DD/MM/YYYY')
+      )
+        return false;
+
       return true;
     });
-
-    console.log(evaluationsFiltered);
 
     if (!evaluationsFiltered) {
       throw new NotFoundException('Nenhuma aplicação encontrada');

@@ -82,6 +82,7 @@ export class ClasseService {
         select: {
           id: true,
           name: true,
+          semester: true,
         },
       })
       .then(async (classes) => {
