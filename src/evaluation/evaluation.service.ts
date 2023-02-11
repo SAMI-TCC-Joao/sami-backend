@@ -37,6 +37,7 @@ export class EvaluationService {
       initialDate: dto.initialDate,
       finalDate: dto.finalDate,
       repeat: dto.repeat,
+      shouldRepeat: dto.shouldRepeat,
     };
 
     return await this.prisma.evaluations
@@ -197,6 +198,7 @@ export class EvaluationService {
           initialDate: true,
           finalDate: true,
           repeat: true,
+          shouldRepeat: true,
           indicator: {
             select: {
               userId: true,

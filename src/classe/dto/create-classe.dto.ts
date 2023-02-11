@@ -24,7 +24,7 @@ export class CreateClasseDto {
     description: 'Discipline code',
     example: '543642',
   })
-  subjectId: number;
+  subjectId: string;
 
   @IsString()
   @IsNotEmpty()

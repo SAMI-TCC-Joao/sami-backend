@@ -58,4 +58,12 @@ export class CreateEvaluationDto {
     },
   })
   repeat: any;
+
+  @IsNotEmpty()
+  @ObjectValidator()
+  @ApiProperty({
+    description: 'Evaluation repeat in the week',
+    example: false,
+  })
+  shouldRepeat: boolean;
 }
